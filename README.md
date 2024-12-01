@@ -34,7 +34,7 @@
 3. 克隆此仓库：
    ```bash
    git clone https://github.com/tile-WWDCCS-name/fontify
-   cd unicode-flash-generator
+   cd fontify
    ```
 
 ## 使用方法

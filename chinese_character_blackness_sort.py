@@ -4,7 +4,7 @@ from json import dump
 import argparse
 
 from PIL import Image, ImageFont, ImageDraw
-from tqdm.rich import tqdm
+from tqdm import tqdm
 
 parser = argparse.ArgumentParser(description="这是一个能将字体内的汉字按黑度排序的脚本")
 parser.add_argument('-fp', '--font_path', type=str, default=join((cur_dir := dirname(__file__)), 'font.ttf'),

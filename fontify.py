@@ -24,6 +24,8 @@ parser.add_argument('-s', '--size', type=int, default=300,
                     help='横向汉字个数，默认为300（不建议超过500）')
 parser.add_argument('-cs', '--char_size', type=int, default=12,
                     help='单个汉字的尺寸，单位为像素，默认为12（建议在8~16之间）')
+parser.add_argument('-crf', '--colorful', action='store_true',
+                    help='输出彩色图片')
 parser.add_argument('-fp', '--font_path', type=str, default=join((cur_dir := dirname(__file__)), 'font.ttf'),
                     help='字体路径，默认为此脚本所在的文件夹下的font.ttf文件，支持otf，但用otf会让速度变慢')
 parser.add_argument('-fp2', '--font_path2', type=str, default=join((cur_dir := dirname(__file__)), 'font2.ttf'),
@@ -49,19 +51,30 @@ path_save_pretreated = args.path_save_pretreated
 dict_ = tuple(map(lambda i: i[:count], load(open(join(cur_dir, 'data.json')))))
 img = Image.open(image_path)
 
-if normalize_brightness_target is not None:
-    from normalize_brightness import normalize_brightness
-    img = normalize_brightness(img, normalize_brightness_target)
-enhancer = ImageEnhance.Contrast(img)
-img = enhancer.enhance(args.contrast_factor)
-if path_save_pretreated is not None:
-    img.save(path_save_pretreated)
-
-img = img.convert('L')
 width, height = img.size
 aspect_ratio = height / width
 img = img.resize((size, (height := round(size * aspect_ratio))))
 
+if args.colorful:
+    img_rgba = img.convert('RGBA')
+    img_data = np.array(img_rgba)
+    bgc_r = round(255 - np.mean(img_data[:, :, 0]))
+    bgc_g = round(255 - np.mean(img_data[:, :, 1]))
+    bgc_b = round(255 - np.mean(img_data[:, :, 2]))
+    bgc = (round(bgc_r * 299/1000 + bgc_g * 587/1000 + bgc_b * 114/1000), ) * 3 + (255, )
+else:
+    bgc = (255, 255, 255, 255)
+
+enhancer = ImageEnhance.Contrast(img)
+img = enhancer.enhance(args.contrast_factor)
+if normalize_brightness_target is not None:
+    from normalize_brightness import normalize_brightness
+    img = normalize_brightness(img, normalize_brightness_target)
+
+if path_save_pretreated is not None:
+    img.save(path_save_pretreated)
+
+img = img.convert('L')
 string_array = np.vectorize(lambda gray: chr(choice(dict_[gray])))(img)
 string_list = string_array.flatten()
 
@@ -70,12 +83,12 @@ font2 = ImageFont.truetype(font_path2, char_size)
 font3 = ImageFont.truetype(font_path3, char_size)
 font4 = ImageFont.truetype(font_path4, char_size)
 
-img = Image.new('RGBA', (size * char_size, height * char_size), (255, 255, 255, 255))
+img = Image.new('RGBA', (size * char_size, height * char_size), bgc)
 draw = ImageDraw.Draw(img)
-
 for index, char in tqdm(enumerate(string_list), total=height * size):
     x = index % size
-    y = index // height
+    y = index // size
+    font = font1
     if 0x3400 <= ord(char) <= 0x9FFF:
         font = font1
     elif 0x20000 <= ord(char) <= 0x2EBE0:
@@ -84,6 +97,10 @@ for index, char in tqdm(enumerate(string_list), total=height * size):
         font = font3
     elif 0x2EBF0 <= ord(char) <= 0x2EE5D:
         font = font4
-    draw.text((x * char_size, (y + 1) * char_size), char, (0, 0, 0, 0), font, anchor='lb')
+    if args.colorful:
+        color = tuple(img_data[y, x])
+    else:
+        color = (0, 0, 0, 0)
+    draw.text((x * char_size, (y + 1) * char_size), char, color, font, anchor='lb')
 
 img.save(output_path)

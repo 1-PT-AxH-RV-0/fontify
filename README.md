@@ -47,16 +47,17 @@ python fontify.py <image_path> <output_path> [options]
 ### 参数说明
 - `image_path`: 输入图片的路径；
 - `output_path`: 输出图片的路径；
-- `-psp`, `--path_save_pretreated`: 预处理后的图片的保存路径（可选）
-- `-nbt`, `--normalize_brightness_target`: 标准化图片亮度目标，范围在 0~255 之间（可选）
-- `-cf`, `--contrast_factor`: 对比度因子，默认为 1.0（可选）
-- `-c`, `--count`: 分配给同一灰度的汉字数量，默认为 5（可选）
-- `-s`, `--size`: 横向汉字个数，默认为 300（可选）
-- `-cs`, `--char_size`: 单个汉字的尺寸，默认为 12（可选）
-- `-fp`, `--font_path`: 字体路径，默认为脚本所在文件夹下的 `font.ttf`（可选）
-- `-fp2`, `--font_path2`: 扩B~扩F的字体路径，默认为脚本所在文件夹下的 `font2.ttf`（可选）
-- `-fp3`, `--font_path3`: 扩G~扩H的字体路径，默认为脚本所在文件夹下的 `font3.ttf`（可选）
-- `-fp4`, `--font_path4`: 扩I的字体路径，默认为脚本所在文件夹下的 `font4.ttf`（可选）
+- `-psp`, `--path_save_pretreated`: 预处理后的图片的保存路径；
+- `-nbt`, `--normalize_brightness_target`: 标准化图片亮度目标，范围在 0~255 之间；
+- `-cf`, `--contrast_factor`: 对比度因子，默认为 1.0；
+- `-c`, `--count`: 分配给同一灰度的汉字数量，默认为 5；
+- `-s`, `--size`: 横向汉字个数，默认为 300；
+- `-cs`, `--char_size`: 单个汉字的尺寸，默认为 12；
+- `-crf`, `--colorful`: 输出彩色图片；
+- `-fp`, `--font_path`: 字体路径，默认为脚本所在文件夹下的 `font.ttf`；
+- `-fp2`, `--font_path2`: 扩B~扩F的字体路径，默认为脚本所在文件夹下的 `font2.ttf`；
+- `-fp3`, `--font_path3`: 扩G~扩H的字体路径，默认为脚本所在文件夹下的 `font3.ttf`；
+- `-fp4`, `--font_path4`: 扩I的字体路径，默认为脚本所在文件夹下的 `font4.ttf`。
 
 ### 示例
 ```bash

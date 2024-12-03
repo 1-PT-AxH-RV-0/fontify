@@ -101,6 +101,6 @@ for index, char in tqdm(enumerate(string_list), total=height * size):
         color = tuple(img_data[y, x])
     else:
         color = (0, 0, 0, 0)
-    draw.text((x * char_size, (y + 1) * char_size), char, color, font, anchor='lb')
+    draw.text((x * char_size, (y + 1) * char_size), char, color, font, anchor='ls')
 
 img.save(output_path)

@@ -263,7 +263,7 @@ if mode == "mobile":
             x -= 1
             offset_x = x + offset[0]
             offset_y = y + offset[1]
-            gray_value = get_weighted_average(img___, (offset_y, offset_x), 1)
+            gray_value = get_weighted_average(img_array, (offset_y, offset_x), 1)
             char = chr(dict_[int(gray_value)])
             if 0x3400 <= ord(char) <= 0x9FFF:
                 font = font1
@@ -299,11 +299,11 @@ if mode == "mobile":
     points = np.linspace(0, 1, (fps * time) + 1)
     offsets_list = list(map(calculate_point, points))
 
-    img___ = np.array(img.convert("L"))
+    img = np.array(img.convert("L"))
     imgs = []
 
     for offset in tqdm(offsets_list[:-1]):
-        imgs.append(draw_text(img___, offset))
+        imgs.append(draw_text(img, offset))
 
     imgs[0].save(
         output_path,
@@ -314,9 +314,6 @@ if mode == "mobile":
         loop=0,
     )
 if mode == "static":
-    if colorful:
-        img_data = np.array(img.convert("RGBA"))
-    img = img.convert("L")
     string_array = np.vectorize(lambda gray: chr(choice(dict_[gray])))(img)
     string_list = string_array.flatten()
 
@@ -336,8 +333,9 @@ if mode == "static":
             font = font4
         if args.colorful:
             color = tuple(img_data[y, x])
+            print(color)
         else:
-            color = (0, 0, 0, 255)
+            color = text_color
         draw.text((x * char_size, (y + 1) * char_size), char, color, font, anchor="ls")
 
     img.save(output_path)

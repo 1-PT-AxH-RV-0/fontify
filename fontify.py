@@ -64,6 +64,12 @@ parser.add_argument(
     default=12,
     help="单个汉字的尺寸，单位为像素，默认为 12（建议在 8~16 之间）",
 )
+parser.add_argument(
+    "-inv",
+    "--invert",
+    action="store_true",
+    help="在获取字符时，将灰度值反转",
+)
 
 colorful_group = parser.add_mutually_exclusive_group()
 colorful_group.add_argument(
@@ -164,6 +170,7 @@ colorful = args.colorful
 contrast_factor = args.contrast_factor
 background_color = hex_to_rgb(args.background_color)
 text_color = hex_to_rgb(args.text_color)
+invert = args.invert
 
 mode = "static"
 if args.command in {"static", "s"}:
@@ -264,6 +271,8 @@ if mode == "mobile":
             offset_x = x + offset[0]
             offset_y = y + offset[1]
             gray_value = get_weighted_average(img_array, (offset_y, offset_x), 1)
+            if invert:
+                gray_value = 255 - gray_value
             char = chr(dict_[int(gray_value)])
             if 0x3400 <= ord(char) <= 0x9FFF:
                 font = font1
@@ -314,7 +323,12 @@ if mode == "mobile":
         loop=0,
     )
 if mode == "static":
-    string_array = np.vectorize(lambda gray: chr(choice(dict_[gray])))(img)
+    def get_char(gray):
+        if invert:
+            gray = 255 - gray
+        return chr(choice(dict_[gray]))
+    
+    string_array = np.vectorize(get_char)(img)
     string_list = string_array.flatten()
 
     img = Image.new("RGBA", (size * char_size, height * char_size), background_color)
@@ -333,7 +347,6 @@ if mode == "static":
             font = font4
         if args.colorful:
             color = tuple(img_data[y, x])
-            print(color)
         else:
             color = text_color
         draw.text((x * char_size, (y + 1) * char_size), char, color, font, anchor="ls")

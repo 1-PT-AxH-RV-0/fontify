@@ -58,6 +58,7 @@ python fontify.py <image_path> <output_path> [options]
 - `-cf`, `--contrast_factor`: 对比度因子，默认为 1.0；
 - `-s`, `--size`: 横向汉字个数，默认为 300；
 - `-cs`, `--char_size`: 单个汉字的尺寸，默认为 12；
+- `-inv`, `--invert`: 反转字符灰度值；
 - `-crf`, `--colorful`: 输出彩色图片（与`--text_color`参数互斥）；
 - `-tc`, `--text_color`: 文字颜色，默认为 #FFFFFF（与`--colorful`参数互斥）；
 - `-fp`, `--font_path`: 基本和扩A的字体路径，默认为脚本所在文件夹下的 `font.ttf`；
